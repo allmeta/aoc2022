@@ -1,0 +1,7 @@
+*
+!*/
+
+!.gitignore
+!*.hs
+!input*
+!day*/
