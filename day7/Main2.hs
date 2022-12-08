@@ -10,15 +10,22 @@ main :: IO ()
 main = 
   interact (
     show .
-    foldl (\a (_,s) -> if s<=100000 then a+s else a)  0 .
     solve
   )
 
-solve xs = traceShowId $ M.toList $ updateParents names $ M.fromList $ dirs
--- solve xs = traceShowId $ dirs
+-- total disk space 70000000
+-- unused needed: 30000000
+-- find total, and find smallest big enough
+solve xs = minimum $ filter (>=needed) $ map snd tree
   where 
     dirs = findSizes "" [] $ lines xs
     names = map fst dirs
+    tree = M.toList $ updateParents names $ M.fromList $ dirs
+    used = traceShowId $ fromJust $ lookup "/" tree
+    closest = traceShowId $ filter ((=="/") . parentPath . fst) tree
+    total = 70000000
+    m = 30000000
+    needed = traceShowId $ m - (total - used)
 
 findSizes :: String -> [(String,Int)] -> [String] -> [(String,Int)]
 findSizes _ dirs [] = dirs
