@@ -17,20 +17,28 @@ main =
 solve :: [[(Int,Int)]] -> (Char,Int) -> [[(Int,Int)]]
 solve p (d,0) = p
 solve (p:pp) (d,n) = solve (np:p:pp) (d,n-1)
-  where np = traceShowId $ move p $ ds d
+  where np = move p $ ds d
 
-move (h@(hx,hy):ts) (x,y) = update h (nh:ts)
+move (h@(hx,hy):ts) (x,y) = update (nh:ts)
   where
     nh = (hx+x,hy+y)
 
-update oldh [] = []
-update oldh [t] = [t]
-update oldh (h:t:ts) = h : nt
+update [] = []
+update [t] = [t]
+update (h:t:ts) = h : nt
   where 
-    nt = if mdist h t then update t (oldh:ts) else t:ts
+    nt = if mdist h t then update $ updateTail h t:ts else t:ts
 
-  
 mdist (hx,hy) (tx,ty) = abs (hx-tx) > 1 || abs (hy-ty) > 1
+  
+updateTail (hx,hy) (tx,ty)
+  | hx/=tx && hy/=ty = (tx+dirx,ty+diry)
+  | hx/=tx = (tx+dirx,ty)
+  | hy/=ty = (tx,ty+diry)
+  | otherwise = (tx,ty)
+  where 
+    dirx = signum (hx-tx)
+    diry = signum (hy-ty)
 
 ds 'U' = (0,1)
 ds 'D' = (0,-1)
