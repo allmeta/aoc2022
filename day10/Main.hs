@@ -19,4 +19,4 @@ solve (x:xs) (i:is) =
   "addx" -> solve (((+x) $ read $ last i):x:x:xs) is
 
 
-xsum xs = sum $ traceShowId $ map (\n->n*(traceShowId $ xs!!n)) [20,60,100,140,180,220]
+xsum xs = sum $ map (\n->n*xs!!(n-1)) [20,60,100,140,180,220]
